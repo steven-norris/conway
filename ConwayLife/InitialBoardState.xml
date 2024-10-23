@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BoardState>
+  <Row>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+  </Row>
+  <Row>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+  </Row>
+  <Row>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+  </Row>
+  <Row>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+  </Row>
+  <Row>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+    <Cell>false</Cell>
+    <Cell>true</Cell>
+  </Row>
+</BoardState>
