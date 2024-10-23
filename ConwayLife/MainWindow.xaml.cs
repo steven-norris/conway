@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Timers;
+using System.Xml.Linq;
 
 namespace ConwayLife
 {
@@ -26,6 +27,7 @@ namespace ConwayLife
             InitializeComponent();
 
             RunState = new LifeState(40, 40);
+            LoadInitialBoardState("InitialBoardState.xml");
             InitializeGrid(RunState);
 
             LifeGridUpdateTimer = new Timer(500);
@@ -94,6 +96,21 @@ namespace ConwayLife
                 RunState.Advance();
 
                 IsUpdating = false;
+            }
+        }
+
+        private void LoadInitialBoardState(string filePath)
+        {
+            XDocument doc = XDocument.Load(filePath);
+            var rows = doc.Root.Elements("Row").ToList();
+
+            for (int row = 0; row < rows.Count; row++)
+            {
+                var cells = rows[row].Elements("Cell").ToList();
+                for (int col = 0; col < cells.Count; col++)
+                {
+                    RunState.Values[row, col] = bool.Parse(cells[col].Value);
+                }
             }
         }
 

@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ConwayLife
 {
@@ -13,7 +14,7 @@ namespace ConwayLife
             Rows = LifeRows;
             Columns = LifeColumns;
             Values = new bool[Rows,Columns];
-            Randomize();
+            LoadInitialBoardState("InitialBoardState.xml");
         }
 
         public int Rows
@@ -32,27 +33,6 @@ namespace ConwayLife
             private set;
         }
 
-        public void Randomize()
-        {
-            Random Randomizer = new Random(Environment.TickCount);
-
-            for(int RowCounter = 0; RowCounter < Rows; RowCounter++)
-            {
-                for(int ColumnCounter = 0; ColumnCounter < Columns; ColumnCounter++)
-                {
-                    switch(Randomizer.Next(2))
-                    {
-                        case 1:
-                            Values[RowCounter,ColumnCounter] = true;
-                            break;
-                        default:
-                            Values[RowCounter, ColumnCounter] = false;
-                            break;
-                    }
-                }
-            }
-        }
-
         public void Advance()
         {
             /*Rules Of Life
@@ -64,8 +44,82 @@ namespace ConwayLife
             4.Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
             */
 
-            //Remove the line below and implement as described above.
-            Randomize();
+            bool[,] newValues = new bool[Rows, Columns];
+
+            for (int row = 0; row < Rows; row++)
+            {
+                for (int col = 0; col < Columns; col++)
+                {
+                    int liveNeighbors = CountLiveNeighbors(row, col);
+
+                    if (Values[row, col])
+                    {
+                        if (liveNeighbors < 2 || liveNeighbors > 3)
+                        {
+                            newValues[row, col] = false;
+                        }
+                        else
+                        {
+                            newValues[row, col] = true;
+                        }
+                    }
+                    else
+                    {
+                        if (liveNeighbors == 3)
+                        {
+                            newValues[row, col] = true;
+                        }
+                        else
+                        {
+                            newValues[row, col] = false;
+                        }
+                    }
+                }
+            }
+
+            Values = newValues;
+        }
+
+        private int CountLiveNeighbors(int row, int col)
+        {
+            int liveNeighbors = 0;
+
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    if (i == 0 && j == 0)
+                        continue;
+
+                    int neighborRow = row + i;
+                    int neighborCol = col + j;
+
+                    if (neighborRow >= 0 && neighborRow < Rows && neighborCol >= 0 && neighborCol < Columns)
+                    {
+                        if (Values[neighborRow, neighborCol])
+                        {
+                            liveNeighbors++;
+                        }
+                    }
+                }
+            }
+
+            return liveNeighbors;
+        }
+
+        private void LoadInitialBoardState(string filePath)
+        {
+            XDocument doc = XDocument.Load(filePath);
+            var rows = doc.Root.Elements("Row").ToList();
+
+            for (int row = 0; row < rows.Count; row++)
+            {
+                var cells = rows[row].Elements("Cell").ToList();
+                for (int col = 0; col < cells.Count; col++)
+                {
+                    Values[row, col] = bool.Parse(cells[col].Value);
+                }
+            }
         }
     }
 }
